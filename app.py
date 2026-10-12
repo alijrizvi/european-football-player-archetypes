@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 # Load local environment variables from .env if present
 load_dotenv()
 
-# Import local modular tools and MLOps utilities
+# Import local modular tools
 from src.tools import (
     find_similar_clones,
     analyze_squad_balance,
@@ -45,6 +45,7 @@ if GEMINI_API_KEY:
     except Exception as e:
         st.warning(f"⚠️ Error configuring Gemini API: {e}")
 
+# Store System Instructions as a valid Python multi-line string
 SYSTEM_INSTRUCTION = """
 You are a Senior Decision Scientist and Tactical Scouting Director for European football.
 You reason over 3D spatial vector embeddings, principal component scores, and HAC cluster archetypes.
@@ -190,11 +191,11 @@ with tab3:
 
     if not api_ready:
         st.warning(
-            "⚠️ Gemini API Key not detected. Please set `GEMINI_API_KEY` in your environment "
-            "or Streamlit Cloud Secrets to activate the AI Copilot layer."
+            "⚠️ Gemini API Key not detected. Please set `GEMINI_API_KEY` in Streamlit Cloud Secrets "
+            "to activate the AI Copilot layer."
         )
     else:
-        # Initialize Gemini Model with System Instructions & Tools
+        # Initialize Gemini Model with System Instructions & Function Calling Tools
         model = genai.GenerativeModel(
             model_name="gemini-1.5-pro",
             generation_config={
