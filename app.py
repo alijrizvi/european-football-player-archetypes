@@ -61,12 +61,12 @@ Maintain a concise, objective, analytical tone.
 # -----------------------------------------------------------------------------
 @st.cache_data
 def load_app_data():
-    parquet_path = os.path.join("data", "processed", "player_matrix_clean.parquet")
+    parquet_path = os.path.join("data", "processed", "player_pca_matrix.parquet")
     json_path = os.path.join("data", "processed", "archetype_profiles.json")
 
     # Fallback paths for flat root testing
     if not os.path.exists(parquet_path):
-        parquet_path = "player_matrix_clean.parquet"
+        parquet_path = "player_pca_matrix.parquet"
     if not os.path.exists(json_path):
         json_path = "archetype_profiles.json"
 
@@ -191,7 +191,7 @@ with tab3:
     if not api_ready:
         st.warning(
             "⚠️ Gemini API Key not detected. Please set `GEMINI_API_KEY` in your environment "
-            "or `.env` file to activate the AI Copilot layer."
+            "or Streamlit Cloud Secrets to activate the AI Copilot layer."
         )
     else:
         # Initialize Gemini Model with System Instructions & Tools
