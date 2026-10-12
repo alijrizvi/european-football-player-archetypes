@@ -1,0 +1,59 @@
+{
+    "1": {
+        "means": {
+            "mean_progressive_action_score": 0.19918112558960657,
+            "total_delta_x": 1261.0046511627909,
+            "mean_delta_x": 1.9658306940794832,
+            "prog_action_ratio": 0.15912209190166612,
+            "verticality_index": 0.14924322863934453,
+            "pitch_tilt_ratio": 0.31821227456050477
+        },
+        "percentiles": {
+            "mean_progressive_action_score": 33.33333333333333,
+            "total_delta_x": 66.66666666666666,
+            "mean_delta_x": 33.33333333333333,
+            "prog_action_ratio": 33.33333333333333,
+            "verticality_index": 33.33333333333333,
+            "pitch_tilt_ratio": 100.0
+        },
+        "player_count": 43
+    },
+    "2": {
+        "means": {
+            "mean_progressive_action_score": 0.2829883574531125,
+            "total_delta_x": 13713.380000000001,
+            "mean_delta_x": 5.033613998111946,
+            "prog_action_ratio": 0.215839681250982,
+            "verticality_index": 0.3541183485713267,
+            "pitch_tilt_ratio": 0.18533064024256535
+        },
+        "percentiles": {
+            "mean_progressive_action_score": 66.66666666666666,
+            "total_delta_x": 100.0,
+            "mean_delta_x": 66.66666666666666,
+            "prog_action_ratio": 66.66666666666666,
+            "verticality_index": 66.66666666666666,
+            "pitch_tilt_ratio": 33.33333333333333
+        },
+        "player_count": 15
+    },
+    "3": {
+        "means": {
+            "mean_progressive_action_score": 0.3257433813890007,
+            "total_delta_x": 1234.3291666666667,
+            "mean_delta_x": 6.060809244892081,
+            "prog_action_ratio": 0.28557791369994834,
+            "verticality_index": 0.4129884285594987,
+            "pitch_tilt_ratio": 0.2007938664498702
+        },
+        "percentiles": {
+            "mean_progressive_action_score": 100.0,
+            "total_delta_x": 33.33333333333333,
+            "mean_delta_x": 100.0,
+            "prog_action_ratio": 100.0,
+            "verticality_index": 100.0,
+            "pitch_tilt_ratio": 66.66666666666666
+        },
+        "player_count": 24
+    }
+}
