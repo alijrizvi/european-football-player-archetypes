@@ -100,8 +100,8 @@ st.sidebar.header("🕹️ Tactical Engine Controls")
 
 selected_league = st.sidebar.multiselect(
     "Filter Leagues",
-    options=df_players["league_name"].unique(),
-    default=df_players["league_name"].unique(),
+    options=df_players["league_name"].str.replace("_", " ").title().unique(),
+    default=df_players["league_name"].str.replace("_", " ").title().unique(),
 )
 
 filtered_df = df_players[df_players["league_name"].isin(selected_league)]
