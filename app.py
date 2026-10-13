@@ -62,12 +62,12 @@ Maintain a concise, objective, analytical tone.
 # -----------------------------------------------------------------------------
 @st.cache_data
 def load_app_data():
-    parquet_path = os.path.join("data", "processed", "player_pca_matrix.parquet")
+    parquet_path = os.path.join("data", "processed", "player_matrix_clean.parquet")
     json_path = os.path.join("data", "processed", "archetype_profiles.json")
 
     # Fallback paths for flat root testing
     if not os.path.exists(parquet_path):
-        parquet_path = "player_pca_matrix.parquet"
+        parquet_path = "player_matrix_clean.parquet"
     if not os.path.exists(json_path):
         json_path = "archetype_profiles.json"
 
