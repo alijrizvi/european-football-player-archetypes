@@ -2,9 +2,13 @@
 
 An End-to-End Decision Intelligence System & AI Copilot transforming raw European football tracking data into actionable 3D spatial vector embeddings, cluster profiles, and automated scouting replacements.
 
-## Medium Case Study: 
+## Medium Case Study
 
 <*European Footballers Player Arcehtype Design*>
+
+## Live App
+
+[Streamlit - Cloud Deployment](https://modeling-european-football-players-archetype.streamlit.app/)
 
 ---
 
@@ -125,11 +129,11 @@ Create a .env file in the root directory:
 
 ## Live Demo: 
 
-Streamlit Cloud App (Add your live link here)
+[Streamlit Cloud App](https://modeling-european-football-players-archetype.streamlit.app/)
 
 ## Author Profile: 
 
-Ali J. Rizvi — GitHub | LinkedIn | Goodreads
+[Ali J. Rizvi](https://medium.com/@alijrizvi/list/data-science-machine-learning-ai-36776666bcd5) — [GitHub](https://www.github.com/alijrizvi) | [LinkedIn](https://www.linkedin.com/in/ali-jazib-rizvi) | [Goodreads](https://www.goodreads.com/ali-jazib-rizvi)
 
 # 📜 License
 
