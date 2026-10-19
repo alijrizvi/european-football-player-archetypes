@@ -149,10 +149,42 @@ with tab1:
 # -----------------------------------------------------------------------------
 with tab2:
     st.subheader("Archetype Tactical Radar Benchmarks")
-    selected_cluster_id = st.selectbox(
+
+    # Map raw JSON / parquet column keys to clean, professional display titles
+    METRIC_MAP = {
+        "mean_progressive_action_score": "Progressive Action Score",
+        "total_displacement_hypotenuse": "Total Distance Covered",
+        "total_delta_x": "Total Distance Covered",  # Fallback key mapping
+        "prog_action_ratio": "Progressive Action %",
+        "verticality_index": "Verticality Index",
+        "pitch_tilt_ratio": "Pitch Tilt",
+        "mean_delta_x": "Forward Yards Gained"      # Fallback key mapping
+    }
+
+    # Custom Cluster Palette
+    CLUSTER_COLORS = {
+        1: "#1f77b4",  # Blue
+        2: "#ff7f0e",  # Orange
+        3: "#2ca02c"   # Green
+    }
+
+    # Dropdown with individual clusters + "Compare All 3 Clusters Together"
+    dropdown_options = [
+        "Compare All 3 Clusters Together",
+        1,
+        2,
+        3
+    ]
+
+    selected_option = st.selectbox(
         "Select Tactical Cluster Archetype",
-        options=list(CLUSTER_NAMES.keys()),
-        format_func=lambda x: f"Cluster {x}: {CLUSTER_NAMES[x]}",
+        options=dropdown_options,
+        format_func=lambda x: (
+            "Compare All 3 Clusters Together"
+            if x == "Compare All 3 Clusters Together"
+            else f"Cluster {x}: {CLUSTER_NAMES[x]}"
+        ),
+        index=0  # Default to showing all 3 together
     )
 
     st.markdown("""
@@ -163,29 +195,70 @@ with tab2:
 - **Pitch Tilt (Attacking Share)**: Calculates the share of a player's progressive involvements that successfully entered or occurred within the opponent's final third (last 20% of the field).
 """)
 
-    cluster_info = archetype_profiles.get(str(selected_cluster_id), {})
-    if cluster_info:
-        pcts = cluster_info["percentiles"]
-        categories = list(pcts.keys())
-        values = list(pcts.values())
+    fig_radar = go.Figure()
 
-        fig_radar = go.Figure()
-        fig_radar.add_trace(
-            go.Scatterpolar(
-                r=values + [values[0]],
-                theta=categories + [categories[0]],
-                fill="toself",
-                name=f"Cluster {selected_cluster_id}",
+    if selected_option == "Compare All 3 Clusters Together":
+        # Loop through all clusters to build an overlaid multi-trace radar chart
+        for c_id in [1, 2, 3]:
+            cluster_info = archetype_profiles.get(str(c_id), {})
+            if cluster_info and "percentiles" in cluster_info:
+                pcts = cluster_info["percentiles"]
+                # Clean up display keys
+                categories = [METRIC_MAP.get(k, k.replace("_", " ").title()) for k in pcts.keys()]
+                values = list(pcts.values())
+
+                fig_radar.add_trace(
+                    go.Scatterpolar(
+                        r=values + [values[0]],
+                        theta=categories + [categories[0]],
+                        fill="toself",
+                        name=f"Cluster {c_id}",
+                        line=dict(color=CLUSTER_COLORS[c_id], width=2),
+                        opacity=0.45
+                    )
+                )
+
+        radar_title = "Percentile Benchmark Profile — All 3 Tactical Archetypes Overlay"
+
+    else:
+        # Plot single selected cluster
+        c_id = selected_option
+        cluster_info = archetype_profiles.get(str(c_id), {})
+        if cluster_info and "percentiles" in cluster_info:
+            pcts = cluster_info["percentiles"]
+            categories = [METRIC_MAP.get(k, k.replace("_", " ").title()) for k in pcts.keys()]
+            values = list(pcts.values())
+
+            fig_radar.add_trace(
+                go.Scatterpolar(
+                    r=values + [values[0]],
+                    theta=categories + [categories[0]],
+                    fill="toself",
+                    name=f"Cluster {c_id}",
+                    line=dict(color=CLUSTER_COLORS[c_id], width=3),
+                    fillcolor=CLUSTER_COLORS[c_id],
+                    opacity=0.5
+                )
             )
-        )
-        fig_radar.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-            showlegend=False,
-            height=500,
-            title=f"Percentile Benchmark Profile — {CLUSTER_NAMES[selected_cluster_id]}",
-        )
-        st.plotly_chart(fig_radar, use_container_width=True)
 
+        radar_title = f"Percentile Benchmark Profile — {CLUSTER_NAMES[c_id]}"
+
+    fig_radar.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 100],
+                ticksuffix="%"
+            )
+        ),
+        showlegend=True if selected_option == "Compare All 3 Clusters Together" else False,
+        height=550,
+        title=radar_title,
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig_radar, use_container_width=True)
+    
 # -----------------------------------------------------------------------------
 # TAB 3: AI COPILOT INTERFACE (GEMINI INTEGRATION)
 # -----------------------------------------------------------------------------
