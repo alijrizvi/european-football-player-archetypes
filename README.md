@@ -66,18 +66,29 @@ Google GenAI SDK (google-genai), Gemini 2.5 Flash, Tool/Function Calling
 
 # 📂 Repository Structure
 
-├── data/
-│   └── processed/
-│       ├── player_matrix_clean.parquet    # Standardized player spatial metrics
-│       └── archetype_profiles.json        # Pre-computed cluster percentile benchmarks
-├── src/
-│   ├── __init__.py
-│   ├── tools.py                           # Native Python tools for Gemini Function Calling
-│   └── utils.py                           # API client initializers & environment loaders
-├── app.py                                 # Core Streamlit multi-tab decision application
-├── requirements.txt                       # Version-pinned dependencies
-├── .env.example                           # Template for API keys
-└── README.md                              # Technical repository documentation
+end-to-end_decision_intelligence_copilot_llm/
+|-- .github/
+|   \-- workflows/
+|       \-- ci.yml
+|-- data/
+|   |-- raw/
+|   |   \-- .gitkeep
+|   \-- processed/
+|       |-- player_matrix_clean.parquet    # Standardized player spatial metrics
+|       \-- archetype_profiles.json        # Pre-computed cluster percentile benchmarks
+|-- src/
+|   |-- __init__.py
+|   |-- etl.py
+|   |-- models.py
+|   |-- optimization.py
+|   \-- tools.py                           # Native Python tools for Gemini Function Calling
+|-- utils/
+|   |-- __init__.py
+|   \-- utils.py                           # API client initializers & environment loaders
+|-- app.py                                 # Core Streamlit multi-tab decision application
+|-- requirements.txt                       # Version-pinned dependencies
+|-- .env.example                           # Template for API keys
+\-- README.md                              # Technical repository documentation                         
 
 ---
 
