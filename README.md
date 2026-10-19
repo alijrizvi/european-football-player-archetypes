@@ -66,6 +66,8 @@ Google GenAI SDK (google-genai), Gemini 2.5 Flash, Tool/Function Calling
 
 # 📂 Repository Structure
 
+```
+
 end-to-end_decision_intelligence_copilot_llm/
 |-- .github/
 |   \-- workflows/
@@ -90,30 +92,32 @@ end-to-end_decision_intelligence_copilot_llm/
 |-- .env.example                           # Template for API keys
 \-- README.md                              # Technical repository documentation                         
 
+```
+
 ---
 
 # 🚀 Quickstart & Local Installation
 
 ## 1. Clone the Repository
 
-git clone https://github.com/alijrizvi/end-to-end_decision_intelligence_copilot_llm.git
-cd end-to-end_decision_intelligence_copilot_llm
+`git clone https://github.com/alijrizvi/end-to-end_decision_intelligence_copilot_llm.git
+cd end-to-end_decision_intelligence_copilot_llm`
 
 ## 2. Set Up Virtual Environment & Dependencies
 
-python -m venv venv
+`python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements.txt`
 
 ## 3. Environment Configuration
 
-`Create a .env file in the root directory:`
+Create a .env file in the root directory:
 
-GEMINI_API_KEY="your_google_gemini_api_key_here"
+`GEMINI_API_KEY="your_google_gemini_api_key_here"`
 
 ## 4. Launch the Streamlit App
 
-streamlit run app.py
+`streamlit run app.py`
 
 ---
 
