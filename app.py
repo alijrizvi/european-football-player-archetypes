@@ -5,47 +5,47 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-import google.generativeai as genai
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
 # Load local environment variables from .env if present
 load_dotenv()
 
 # Import local modular tools
 from src.tools import (
-    find_similar_clones,
     analyze_squad_balance,
+    find_similar_clones,
     get_top_archetype_players,
 )
-from src.utils import initialize_gemini_client
 
 # -----------------------------------------------------------------------------
 # 1. PAGE CONFIGURATION & THEME
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="European Tactical Decision Engine",
+    page_title="AI Copilot: European Footballer Archetypes",
     page_icon="⚽",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-st.title("⚽ European Tactical Decision Engine & Archetype Copilot")
-st.caption("3D Spatial Vector Archetype Analytics & Grounded AI Scouting Agent")
+st.title("⚽ European Footballers Archetype | Tactical Decision Engine")
+st.caption("➡️ Your Personal LLM Assistant: Transforming Us Football Fans into Tactical Decision Scientists!")
 
 # -----------------------------------------------------------------------------
-# 2. GEMINI AI STUDIO CONFIGURATION
+# 2. GEMINI AI CLIENT CONFIGURATION
 # -----------------------------------------------------------------------------
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY")
+client = None
 api_ready = False
 
 if GEMINI_API_KEY:
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
+        client = genai.Client(api_key=GEMINI_API_KEY)
         api_ready = True
     except Exception as e:
-        st.warning(f"⚠️ Error configuring Gemini API: {e}")
+        st.warning(f"⚠️ Error configuring Gemini API client: {e}")
 
-# Store System Instructions as a valid Python multi-line string
 SYSTEM_INSTRUCTION = """
 You are a Senior Decision Scientist and Tactical Scouting Director for European football.
 You reason over 3D spatial vector embeddings, principal component scores, and HAC cluster archetypes.
@@ -72,7 +72,7 @@ def load_app_data():
         json_path = "archetype_profiles.json"
 
     df = pd.read_parquet(parquet_path)
-    with open(json_path, "r") as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         profiles = json.load(f)
 
     return df, profiles
@@ -86,11 +86,9 @@ except Exception as e:
 
 # Define Cluster taxonomy labels
 CLUSTER_NAMES = {
-    0: "Tempo-Setting Recyclers",
-    1: "Vertical Ball-Carriers / Transition Engines",
-    2: "Final-Third Penetrators / Primary Creators",
-    3: "Direct Wingers / 1v1 Take-On Specialists",
-    4: "Defensive Anchor / Ball Recovery Specialists",
+    1: "〽️ Final-Third Penetrators / Primary Creators",
+    2: "⤴️ Vertical Ball-Carriers / Transition Engines",
+    3: "⚡️ Direct Wingers / 1v1 Take-On Specialists (Boy - Aren't They Everyone's Favorites?! 🔥)"
 }
 
 # -----------------------------------------------------------------------------
@@ -104,7 +102,7 @@ selected_league = st.sidebar.multiselect(
     default=df_players["league_name"].str.replace("_", " ").str.title().unique(),
 )
 
-filtered_df = df_players[df_players["league_name"].isin(selected_league)]
+filtered_df = df_players[df_players["league_name"].str.replace("_", " ").str.title().isin(selected_league)]
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("📊 Dataset Telemetry")
@@ -157,6 +155,14 @@ with tab2:
         format_func=lambda x: f"Cluster {x}: {CLUSTER_NAMES[x]}",
     )
 
+    st.markdown("""
+- **Progressive Action Score**: Evaluates the overall quality and forward threat level of a player's progressive passes, carries, and dribbles based on historical success models.
+- **Total Distance Covered**: Represents the net horizontal spatial displacement (the direct hypotenuse vector distance) a player achieved via forward actions on the pitch.
+- **Progressive Action %**: The percentage of a player's total ball involvements that successfully pushed the team forward, highlighting how direct or progress-minded they are.
+- **Verticality Index**: Measures a player's vertical directness by calculating the ratio of forward yardage gained against their total overall distance traveled.
+- **Pitch Tilt (Attacking Share)**: Calculates the share of a player's progressive involvements that successfully entered or occurred within the opponent's final third (last 20% of the field).
+""")
+
     cluster_info = archetype_profiles.get(str(selected_cluster_id), {})
     if cluster_info:
         pcts = cluster_info["percentiles"]
@@ -184,29 +190,18 @@ with tab2:
 # TAB 3: AI COPILOT INTERFACE (GEMINI INTEGRATION)
 # -----------------------------------------------------------------------------
 with tab3:
-    st.subheader("🤖 Grounded Decision Intelligence Copilot")
+    st.subheader("🤖 Your Personal Assistant Manager")
     st.markdown(
+        "Grounded in this project's data, analytics, and Machine Learning models. Consider this one of your team's *complementary* Data Scientists! "
         "Ask tactical questions, request 3D Euclidean player replacements, or evaluate squad archetype balance."
     )
 
-    if not api_ready:
+    if not api_ready or client is None:
         st.warning(
             "⚠️ Gemini API Key not detected. Please set `GEMINI_API_KEY` in Streamlit Cloud Secrets "
-            "to activate the AI Copilot layer."
+            "or your local environment to activate the AI Copilot layer."
         )
     else:
-        # Initialize Gemini Model with System Instructions & Function Calling Tools
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro",
-            generation_config={
-                "temperature": 0.2,
-                "top_p": 0.95,
-                "max_output_tokens": 1024,
-            },
-            system_instruction=SYSTEM_INSTRUCTION,
-            tools=[find_similar_clones, analyze_squad_balance, get_top_archetype_players],
-        )
-
         # Initialize Chat Session State
         if "messages" not in st.session_state:
             st.session_state.messages = [
@@ -230,11 +225,40 @@ with tab3:
             with st.chat_message("assistant"):
                 with st.spinner("Reasoning over 3D vector space and querying tools..."):
                     try:
-                        chat = model.start_chat(enable_automatic_function_calling=True)
-                        response = chat.send_message(user_query)
-                        st.markdown(response.text)
+                        # Configure tools and system instructions
+                        config = types.GenerateContentConfig(
+                            system_instruction=SYSTEM_INSTRUCTION,
+                            temperature=0.2,
+                            top_p=0.95,
+                            max_output_tokens=1024,
+                            tools=[
+                                find_similar_clones,
+                                analyze_squad_balance,
+                                get_top_archetype_players,
+                            ],
+                        )
+
+                        # Reconstruct conversation history for multi-turn chat
+                        contents = []
+                        for m in st.session_state.messages:
+                            role = "user" if m["role"] == "user" else "model"
+                            contents.append(
+                                types.Content(
+                                    role=role,
+                                    parts=[types.Part.from_text(text=m["content"])],
+                                )
+                            )
+
+                        response = client.models.generate_content(
+                            model="gemini-2.5-flash",
+                            contents=contents,
+                            config=config,
+                        )
+
+                        response_text = response.text or "I completed the tool analysis for your tactical query."
+                        st.markdown(response_text)
                         st.session_state.messages.append(
-                            {"role": "assistant", "content": response.text}
+                            {"role": "assistant", "content": response_text}
                         )
                     except Exception as err:
                         st.error(f"Copilot Error: {err}")
