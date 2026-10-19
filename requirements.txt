@@ -9,5 +9,4 @@ pyarrow
 python-dotenv
 fastparquet
 google-genai
-google-generativeai
 streamlit
