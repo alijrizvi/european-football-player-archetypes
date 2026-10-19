@@ -8,6 +8,6 @@ plotly
 pyarrow
 python-dotenv
 fastparquet
-genai
+google-genai
 google-generativeai
 streamlit
